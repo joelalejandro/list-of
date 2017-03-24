@@ -7,11 +7,16 @@
   "author": "Joel A. Villarreal Bertoldi",
   "license": "MIT",
   "keywords": [],
-  "main": "index.js",
-  "jsnext:main": "index.es6.js",
+  "main": "dist/index.js",
+  "jsnext:main": "dist/index.es6.js",
   "babel": {
     "presets": [
-      "es2015",
+      [
+        "es2015",
+        {
+          "modules": false
+        }
+      ],
       "stage-0"
     ],
     "plugins": [
@@ -50,8 +55,8 @@
   },
   "scripts": {
     "lint": "eslint src test tools",
-    "test": "mocha --compilers js:babel-register",
-    "test:watch": "mocha --compilers js:babel-register --reporter min --watch",
+    "test": "mocha --compilers js:babel-core/register",
+    "test:watch": "mocha --compilers js:babel-core/register --watch",
     "test:cover": "babel-node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "build": "node tools/build",
