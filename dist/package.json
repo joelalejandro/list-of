@@ -1,0 +1,14 @@
+{
+  "name": "list-of",
+  "version": "0.0.1",
+  "description": "A JavaScript implementation of the C# List&lt;T&gt; object",
+  "repository": "joelalejandro/list-of",
+  "author": "Joel A. Villarreal Bertoldi",
+  "license": "MIT",
+  "keywords": [],
+  "main": "dist/index.js",
+  "jsnext:main": "dist/index.es6.js",
+  "dependencies": {
+    "babel-runtime": "^6.6.1"
+  }
+}
