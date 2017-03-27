@@ -319,7 +319,7 @@
             return arrayItem !== item;
           });
         } else {
-          this.__array__ = this.except(item);
+          this.__array__ = this.except(item).toArray();
         }
         return this;
       }

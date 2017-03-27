@@ -244,7 +244,7 @@ export default class ListOf {
     if (!this.__typeIsObject__) {
       this.__array__ = this.__array__.filter(arrayItem => arrayItem !== item);
     } else {
-      this.__array__ = this.except(item);
+      this.__array__ = this.except(item).toArray();
     }
     return this;
   }
