@@ -244,18 +244,18 @@ export default class ListOf {
     if (!this.__typeIsObject__) {
       this.__array__ = this.__array__.filter(arrayItem => arrayItem !== item);
     } else {
-      this.__array__ = this.except(item).toArray();
+      this.indexesOf(item).forEach(index => this.removeAt(index));
     }
     return this;
   }
 
-  removeAt(where) {
-    return this.remove(this.elementAt(where));
+  removeAt(position) {
+    return this.removeRange(position, 1);
   }
 
-  removeRange(from, to) {
+  removeRange(from, count) {
     const newArray = [];
-    for (let x = from; x < this.__array__.length && x < from + to; x += 1) {
+    for (let x = from; x < this.__array__.length && x < from + count; x += 1) {
       newArray.push(this.__array__[x]);
     }
     this.__array__ = newArray;

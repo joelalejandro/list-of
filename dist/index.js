@@ -314,25 +314,29 @@ var ListOf = function () {
   }, {
     key: 'remove',
     value: function remove(item) {
+      var _this4 = this;
+
       if (!this.__typeIsObject__) {
         this.__array__ = this.__array__.filter(function (arrayItem) {
           return arrayItem !== item;
         });
       } else {
-        this.__array__ = this.except(item).toArray();
+        this.indexesOf(item).forEach(function (index) {
+          return _this4.removeAt(index);
+        });
       }
       return this;
     }
   }, {
     key: 'removeAt',
-    value: function removeAt(where) {
-      return this.remove(this.elementAt(where));
+    value: function removeAt(position) {
+      return this.removeRange(position, 1);
     }
   }, {
     key: 'removeRange',
-    value: function removeRange(from, to) {
+    value: function removeRange(from, count) {
       var newArray = [];
-      for (var x = from; x < this.__array__.length && x < from + to; x += 1) {
+      for (var x = from; x < this.__array__.length && x < from + count; x += 1) {
         newArray.push(this.__array__[x]);
       }
       this.__array__ = newArray;
