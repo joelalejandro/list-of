@@ -42,23 +42,35 @@ export default class ListOf {
 
   all(what) {
     if (typeof what === 'object' && !Array.isArray(what)) {
-      return this.__array__.every ? this.__array__.every(
-        item => Object.keys(what).map(key => item[key] === what[key]).reduce((a, b) => a && b)
-      ) : this.find(what).count() === this.__array__.length;
-    } else if (typeof what === 'function') {
-      return this.__array__.every ? this.__array__.every(what) : this.__array__.filter(what).length === this.__array__.length;
+      return this.__array__.every
+        ? this.__array__.every(
+            item => Object.keys(what).map(key => item[key] === what[key]).reduce((a, b) => a && b)
+          )
+        : this.find(what).count() === this.__array__.length;
     }
+
+    if (typeof what === 'function') {
+      return this.__array__.every
+        ? this.__array__.every(what)
+        : this.__array__.filter(what).length === this.__array__.length;
+    }
+
     throw new Error(`ListOf#all: parameter 'what' must be an Object or a function predicate`)
   }
 
   any(what) {
     if (typeof what === 'object' && !Array.isArray(what)) {
-      return this.__array__.some ? this.__array__.some(
-        item => Object.keys(what).map(key => item[key] === what[key]).reduce((a, b) => a || b)
-      ) : (this.find(what).count() || Infinity) <= this.__array__.length;
-    } else if (typeof what === 'function') {
+      return this.__array__.some
+        ? this.__array__.some(
+            item => Object.keys(what).map(key => item[key] === what[key]).reduce((a, b) => a || b)
+          )
+        : (this.find(what).count() || Infinity) <= this.__array__.length;
+    }
+
+    if (typeof what === 'function') {
       return this.__array__.some ? this.__array__.some(what) : (this.__array__.filter(what).length || Infinity) <= this.__array__.length;
     }
+
     throw new Error(`ListOf#all: parameter 'what' must be an Object or a function predicate`)
   }
 
@@ -99,6 +111,10 @@ export default class ListOf {
   }
 
   except(what) {
+    if (what instanceof Function) {
+      return _asListOf(this.type, this.__array__.filter(what));
+    }
+
     if (this.__typeIsObject__ && !Array.isArray(what)) {
       return _asListOf(this.type, this.__array__.filter((item) => {
         let isValid = 1;
@@ -117,9 +133,8 @@ export default class ListOf {
           }
         });
       }));
-    } else if (what instanceof Function) {
-      return _asListOf(this.type, this.__array__.filter(what));
     }
+
     return _asListOf(this.type, this.__array__.filter(item => item !== what));
   }
 
@@ -230,10 +245,13 @@ export default class ListOf {
     if (where > this.__array__.length) {
       throw new Error(`ListOf#insert: index out of range, 'where' must be <= ${this.__array__.length}`);
     }
+
     if (what instanceof this.type) {
       this.__array__.splice(0, where).concat([what]).concat(this.__array__.splice(where - 1));
       return this;
-    } else if (Array.isArray(what)) {
+    }
+
+    if (Array.isArray(what)) {
       this.__array__.splice(0, where).concat(what).concat(this.__array__.splice(where - 1));
       return this;
     }
@@ -265,6 +283,10 @@ export default class ListOf {
   }
 
   find(what) {
+    if (what instanceof Function) {
+      return _asListOf(this.type, this.__array__.filter(what));
+    }
+
     if (this.__typeIsObject__ && !Array.isArray(what)) {
       return _asListOf(this.type, this.__array__.filter((arrayItem) => {
         let isValid = 1;
@@ -287,8 +309,6 @@ export default class ListOf {
         });
         return isValid;
       }));
-    } else if (what instanceof Function) {
-      return _asListOf(this.type, this.__array__.filter(what));
     }
 
     return _asListOf(this.type, this.__array__.filter(arrayItem => arrayItem === what));
