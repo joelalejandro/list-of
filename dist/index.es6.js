@@ -314,10 +314,8 @@ var ListOf = function () {
           return arrayItem !== item;
         });
       } else {
-        var removables = this.find(item).toArray();
-        this.__array__ = this.__array__.filter(function (arrayItem) {
-          return !(removables.indexOf(arrayItem) > -1);
-        });
+        var index = this.__array__.indexOf(item);
+        this.__array__ = this.__array__.slice(0, index).concat(this.__array__.slice(index + 1));
       }
       return this;
     }
