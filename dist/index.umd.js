@@ -100,7 +100,7 @@
         if (this.__typeIsObject__ && typeof what === 'string') {
           for (var i = 0; i < this.__array__.length; i += 1) {
             var value = this.__array__[i][what];
-            sum += value instanceof Function ? value() : value;
+            sum += value instanceof Function ? value.bind(this.__array__[i])() : value;
           }
         } else if (this.__typeIsPrimitive__ && this.type === Number) {
           for (var _i = 0; _i < this.__array__.length; _i += 1) {
