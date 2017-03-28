@@ -70,7 +70,8 @@ export default class ListOf {
     let sum = 0;
     if (this.__typeIsObject__ && typeof what === 'string') {
       for (let i = 0; i < this.__array__.length; i += 1) {
-        sum += this.__array__[i][what];
+        const value = this.__array__[i][what];
+        sum += value instanceof Function ? value() : value;
       }
     } else if (this.__typeIsPrimitive__ && this.type === Number) {
       for (let i = 0; i < this.__array__.length; i += 1) {
