@@ -67,9 +67,12 @@
               return a && b;
             });
           }) : this.find(what).count() === this.__array__.length;
-        } else if (typeof what === 'function') {
+        }
+
+        if (typeof what === 'function') {
           return this.__array__.every ? this.__array__.every(what) : this.__array__.filter(what).length === this.__array__.length;
         }
+
         throw new Error('ListOf#all: parameter \'what\' must be an Object or a function predicate');
       }
     }, {
@@ -83,9 +86,12 @@
               return a || b;
             });
           }) : (this.find(what).count() || Infinity) <= this.__array__.length;
-        } else if (typeof what === 'function') {
+        }
+
+        if (typeof what === 'function') {
           return this.__array__.some ? this.__array__.some(what) : (this.__array__.filter(what).length || Infinity) <= this.__array__.length;
         }
+
         throw new Error('ListOf#all: parameter \'what\' must be an Object or a function predicate');
       }
     }, {
@@ -133,6 +139,10 @@
     }, {
       key: 'except',
       value: function except(what) {
+        if (what instanceof Function) {
+          return _asListOf(this.type, this.__array__.filter(what));
+        }
+
         if (this.__typeIsObject__ && !Array.isArray(what)) {
           return _asListOf(this.type, this.__array__.filter(function (item) {
             var isValid = 1;
@@ -151,9 +161,8 @@
               }
             });
           }));
-        } else if (what instanceof Function) {
-          return _asListOf(this.type, this.__array__.filter(what));
         }
+
         return _asListOf(this.type, this.__array__.filter(function (item) {
           return item !== what;
         }));
@@ -302,10 +311,13 @@
         if (where > this.__array__.length) {
           throw new Error('ListOf#insert: index out of range, \'where\' must be <= ' + this.__array__.length);
         }
+
         if (what instanceof this.type) {
           this.__array__.splice(0, where).concat([what]).concat(this.__array__.splice(where - 1));
           return this;
-        } else if (Array.isArray(what)) {
+        }
+
+        if (Array.isArray(what)) {
           this.__array__.splice(0, where).concat(what).concat(this.__array__.splice(where - 1));
           return this;
         }
@@ -343,6 +355,10 @@
     }, {
       key: 'find',
       value: function find(what) {
+        if (what instanceof Function) {
+          return _asListOf(this.type, this.__array__.filter(what));
+        }
+
         if (this.__typeIsObject__ && !Array.isArray(what)) {
           return _asListOf(this.type, this.__array__.filter(function (arrayItem) {
             var isValid = 1;
@@ -365,8 +381,6 @@
             });
             return isValid;
           }));
-        } else if (what instanceof Function) {
-          return _asListOf(this.type, this.__array__.filter(what));
         }
 
         return _asListOf(this.type, this.__array__.filter(function (arrayItem) {
