@@ -308,15 +308,14 @@ var ListOf = function () {
   }, {
     key: 'remove',
     value: function remove(item) {
-      var _this4 = this;
-
       if (!this.__typeIsObject__) {
         this.__array__ = this.__array__.filter(function (arrayItem) {
           return arrayItem !== item;
         });
       } else {
-        this.indexesOf(item).forEach(function (index) {
-          return _this4.removeAt(index);
+        var removables = this.find(item).toArray();
+        this.__array__ = this.__array__.filter(function (arrayItem) {
+          return !(removables.indexOf(arrayItem) > -1);
         });
       }
       return this;

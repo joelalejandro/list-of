@@ -244,7 +244,8 @@ export default class ListOf {
     if (!this.__typeIsObject__) {
       this.__array__ = this.__array__.filter(arrayItem => arrayItem !== item);
     } else {
-      this.indexesOf(item).forEach(index => this.removeAt(index));
+      const removables = this.find(item).toArray();
+      this.__array__ = this.__array__.filter(arrayItem => !(removables.indexOf(arrayItem) > -1));
     }
     return this;
   }

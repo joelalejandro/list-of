@@ -1,6 +1,6 @@
 {
   "name": "list-of",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A JavaScript implementation of the C# List&lt;T&gt; object",
   "repository": "joelalejandro/list-of",
   "author": "Joel A. Villarreal Bertoldi",
