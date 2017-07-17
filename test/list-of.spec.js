@@ -144,6 +144,24 @@ describe('ListOf', () => {
         expect(added).to.eql(persons[index]);
       });
     });
+    it('should trigger before:add', (done) => {
+      const list = new ListOf(PersonClass);
+      const person = new PersonClass('Joel', 27);
+      list.on('before:add', (item) => {
+        expect(item).to.eql(person);
+        done();
+      });
+      list.add(person);
+    });
+    it('should trigger add', (done) => {
+      const list = new ListOf(PersonClass);
+      const person = new PersonClass('Joel', 27);
+      list.on('add', (item) => {
+        expect(item).to.eql(person);
+        done();
+      });
+      list.add(person);
+    });
   });
   describe('#all', () => {
     describe('using every', () => {
@@ -251,6 +269,16 @@ describe('ListOf', () => {
       expect(list.toArray().length).to.be.greaterThan.zero;
       list.clear();
       expect(list.toArray().length).to.be.zero;
+    });
+    it('should trigger before:clear', (done) => {
+      const list = buildList();
+      list.on('before:clear', () => { done(); })
+      list.clear();
+    });
+    it('should trigger clear', (done) => {
+      const list = buildList();
+      list.on('clear', () => { done(); })
+      list.clear();
     });
   });
   describe('#contains', () => {

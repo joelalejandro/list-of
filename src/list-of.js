@@ -6,11 +6,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE.txt file in the root directory of this source tree.
  */
+import EventEmitter from 'eventemitter3';
 
 const _asListOf = (type, values) => new ListOf(type).add(values);
 
-export default class ListOf {
+export default class ListOf extends EventEmitter {
   constructor(type) {
+    super();
+
     this.type = type;
 
     this.__array__ = [];
@@ -20,6 +23,8 @@ export default class ListOf {
   }
 
   add(items) {
+    this.emit('before:add', items);
+
     const _add = (item) => {
       if ((this.__typeIsPrimitive__ && (typeof item).toLowerCase() === this.type.name.toLowerCase())
         || (this.__typeIsObject__ && item instanceof this.type)) {
@@ -37,6 +42,8 @@ export default class ListOf {
     }
 
     _add(items);
+
+    this.emit('add', items);
     return this;
   }
 
@@ -94,7 +101,12 @@ export default class ListOf {
   }
 
   clear() {
+    this.emit('before:clear');
+
     this.__array__ = [];
+
+    this.emit('clear');
+
     return this;
   }
 
@@ -243,17 +255,21 @@ export default class ListOf {
   }
 
   insert(where, what) {
+    this.emit('before:insert', where, what);
+
     if (where > this.__array__.length) {
       throw new Error(`ListOf#insert: index out of range, 'where' must be <= ${this.__array__.length}`);
     }
 
     if (what instanceof this.type) {
       this.__array__.splice(0, where).concat([what]).concat(this.__array__.splice(where - 1));
+      this.emit('insert', where, what);
       return this;
     }
 
     if (Array.isArray(what)) {
       this.__array__.splice(0, where).concat(what).concat(this.__array__.splice(where - 1));
+      this.emit('insert', where, what);
       return this;
     }
 
@@ -261,12 +277,17 @@ export default class ListOf {
   }
 
   remove(item) {
+    this.emit('before:remove', item);
+
     if (!this.__typeIsObject__) {
       this.__array__ = this.__array__.filter(arrayItem => arrayItem !== item);
     } else {
       const index = this.__array__.indexOf(item);
       this.__array__ = this.__array__.slice(0, index).concat(this.__array__.slice(index + 1));
     }
+
+    this.emit('remove', item);
+
     return this;
   }
 
@@ -275,11 +296,16 @@ export default class ListOf {
   }
 
   removeRange(from, count) {
+    this.emit('before:removeRange', from, count);
+
     const newArray = [];
     for (let x = from; x < this.__array__.length && x < from + count; x += 1) {
       newArray.push(this.__array__[x]);
     }
     this.__array__ = newArray;
+
+    this.emit('removeRange', from, count);
+
     return this;
   }
 
