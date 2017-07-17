@@ -148,7 +148,8 @@ export default class ListOf {
   }
 
   findLast(what) {
-    const result = this.find(what)
+    const result = this.find(what);
+    return result.elementAt(result.count() - 1) || null;
   }
 
   first(what) {
