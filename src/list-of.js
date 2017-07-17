@@ -144,7 +144,7 @@ export default class ListOf {
 
   findFirst(what) {
     const result = this.find(what);
-    return result.length > 0 ? result[0] : null;
+    return result.elementAt(0) || null;
   }
 
   findLast(what) {
