@@ -176,12 +176,13 @@ var ListOf = function () {
     key: 'findFirst',
     value: function findFirst(what) {
       var result = this.find(what);
-      return result.length > 0 ? result[0] : null;
+      return result.elementAt(0) || null;
     }
   }, {
     key: 'findLast',
     value: function findLast(what) {
       var result = this.find(what);
+      return result.elementAt(result.count() - 1) || null;
     }
   }, {
     key: 'first',
