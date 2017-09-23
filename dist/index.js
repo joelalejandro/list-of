@@ -6,43 +6,45 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var _Object$keys = _interopDefault(require('babel-runtime/core-js/object/keys'));
 var _typeof = _interopDefault(require('babel-runtime/helpers/typeof'));
+var _Object$getPrototypeOf = _interopDefault(require('babel-runtime/core-js/object/get-prototype-of'));
 var _classCallCheck = _interopDefault(require('babel-runtime/helpers/classCallCheck'));
 var _createClass = _interopDefault(require('babel-runtime/helpers/createClass'));
-
-/**
- * ListOf - A JavaScript implementation of the C# List<T> object
- *
- * Copyright © 2016 Joel A. Villarreal Bertoldi. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+var _possibleConstructorReturn = _interopDefault(require('babel-runtime/helpers/possibleConstructorReturn'));
+var _inherits = _interopDefault(require('babel-runtime/helpers/inherits'));
+var EventEmitter = _interopDefault(require('eventemitter3'));
 
 var _asListOf = function _asListOf(type, values) {
   return new ListOf(type).add(values);
 };
 
-var ListOf = function () {
+var ListOf = function (_EventEmitter) {
+  _inherits(ListOf, _EventEmitter);
+
   function ListOf(type) {
     _classCallCheck(this, ListOf);
 
-    this.type = type;
+    var _this = _possibleConstructorReturn(this, (ListOf.__proto__ || _Object$getPrototypeOf(ListOf)).call(this));
 
-    this.__array__ = [];
-    this.__typeIsPrimitive__ = [Number, String, Boolean].indexOf(type) > -1;
-    this.__typeIsObject__ = !this.__typeIsPrimitive__ && type.toString().toLowerCase().indexOf('function') === 0;
+    _this.type = type;
+
+    _this.__array__ = [];
+    _this.__typeIsPrimitive__ = [Number, String, Boolean].indexOf(type) > -1;
+    _this.__typeIsObject__ = !_this.__typeIsPrimitive__ && type.toString().toLowerCase().indexOf('function') === 0;
+    return _this;
   }
 
   _createClass(ListOf, [{
     key: 'add',
     value: function add(items) {
-      var _this = this;
+      var _this2 = this;
+
+      this.emit('before:add', items);
 
       var _add = function _add(item) {
-        if (_this.__typeIsPrimitive__ && (typeof item === 'undefined' ? 'undefined' : _typeof(item)).toLowerCase() === _this.type.name.toLowerCase() || _this.__typeIsObject__ && item instanceof _this.type) {
-          _this.__array__.push(item);
+        if (_this2.__typeIsPrimitive__ && (typeof item === 'undefined' ? 'undefined' : _typeof(item)).toLowerCase() === _this2.type.name.toLowerCase() || _this2.__typeIsObject__ && item instanceof _this2.type) {
+          _this2.__array__.push(item);
         } else {
-          throw new Error('ListOf#add: Item must be of type ' + _this.type.name);
+          throw new Error('ListOf#add: Item must be of type ' + _this2.type.name);
         }
       };
 
@@ -54,6 +56,8 @@ var ListOf = function () {
       }
 
       _add(items);
+
+      this.emit('add', items);
       return this;
     }
   }, {
@@ -118,7 +122,12 @@ var ListOf = function () {
   }, {
     key: 'clear',
     value: function clear() {
+      this.emit('before:clear');
+
       this.__array__ = [];
+
+      this.emit('clear');
+
       return this;
     }
   }, {
@@ -204,11 +213,11 @@ var ListOf = function () {
   }, {
     key: 'indexOf',
     value: function indexOf(what) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.__typeIsObject__ && !Array.isArray(what)) {
         var _loop = function _loop(i) {
-          var item = _this2.__array__[i];
+          var item = _this3.__array__[i];
           var isValid = 1;
           var atLeastOneValid = 0;
           if (item === null && what === null) {
@@ -255,12 +264,12 @@ var ListOf = function () {
   }, {
     key: 'indexesOf',
     value: function indexesOf(what) {
-      var _this3 = this;
+      var _this4 = this;
 
       var indexes = [];
       if (this.__typeIsObject__ && !Array.isArray(what)) {
         var _loop2 = function _loop2(i) {
-          var item = _this3.__array__[i];
+          var item = _this4.__array__[i];
           var isValid = 1;
           var atLeastOneValid = 0;
           if (item === null && what === null) {
@@ -309,17 +318,21 @@ var ListOf = function () {
   }, {
     key: 'insert',
     value: function insert(where, what) {
+      this.emit('before:insert', where, what);
+
       if (where > this.__array__.length) {
         throw new Error('ListOf#insert: index out of range, \'where\' must be <= ' + this.__array__.length);
       }
 
       if (what instanceof this.type) {
         this.__array__.splice(0, where).concat([what]).concat(this.__array__.splice(where - 1));
+        this.emit('insert', where, what);
         return this;
       }
 
       if (Array.isArray(what)) {
         this.__array__.splice(0, where).concat(what).concat(this.__array__.splice(where - 1));
+        this.emit('insert', where, what);
         return this;
       }
 
@@ -328,6 +341,8 @@ var ListOf = function () {
   }, {
     key: 'remove',
     value: function remove(item) {
+      this.emit('before:remove', item);
+
       if (!this.__typeIsObject__) {
         this.__array__ = this.__array__.filter(function (arrayItem) {
           return arrayItem !== item;
@@ -336,6 +351,9 @@ var ListOf = function () {
         var index = this.__array__.indexOf(item);
         this.__array__ = this.__array__.slice(0, index).concat(this.__array__.slice(index + 1));
       }
+
+      this.emit('remove', item);
+
       return this;
     }
   }, {
@@ -346,11 +364,16 @@ var ListOf = function () {
   }, {
     key: 'removeRange',
     value: function removeRange(from, count) {
+      this.emit('before:removeRange', from, count);
+
       var newArray = [];
       for (var x = from; x < this.__array__.length && x < from + count; x += 1) {
         newArray.push(this.__array__[x]);
       }
       this.__array__ = newArray;
+
+      this.emit('removeRange', from, count);
+
       return this;
     }
   }, {
@@ -481,7 +504,7 @@ var ListOf = function () {
   }]);
 
   return ListOf;
-}();
+}(EventEmitter);
 
 exports.ListOf = ListOf;
 //# sourceMappingURL=index.js.map
